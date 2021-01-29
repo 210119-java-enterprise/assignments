@@ -1,3 +1,5 @@
+Greg Gertsen
+
 --2.1 SELECT
 --Task – Select all records from the Employee table.
 
