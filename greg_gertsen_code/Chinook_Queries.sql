@@ -55,14 +55,42 @@ select * from "Invoice" where "BillingAddress" like 'T%';
 select * from "Invoice" where "Total" between 15 and 50;
 
 --Task – Select all employees hired between 1st​ of June 2003 and 1st​ of March 2004
+select * from "Employee" where "HireDate"  between '2003-06-01 00:00:00' and '2004-03-01 00:00:00'; 
 
 --2.7 DELETE
 --Task – Delete a record in Customer table where the name is Robert Walter 
 --(There may be constraints that rely on this, find out how to resolve them).
 
+
+alter table "Invoice"
+drop constraint "FK_InvoiceCustomerId";
+
+
+alter table "Invoice"
+add constraint "FK_InvoiceCustomerId"
+foreign key ("CustomerId") 
+references "Customer" ("CustomerId") on delete cascade;
+
+
+alter table "InvoiceLine" 
+drop constraint "FK_InvoiceLineInvoiceId";
+
+
+alter table "InvoiceLine"
+add constraint "FK_InvoiceLineInvoiceId"
+foreign key ("InvoiceId") 
+references "Invoice" ("InvoiceId") on delete cascade;
+
+
+delete from "Customer" where "FirstName" = 'Robert' and "LastName" = 'Walter';
+
+
+
 --3.0 SQL Functions
 --In this section you will be using the PostGreSQL system functions, 
 --as well as your own functions, to perform various actions against the database
+
+
 
 --3.1 System Defined Functions
 --Task – Create a function that returns the current time.
