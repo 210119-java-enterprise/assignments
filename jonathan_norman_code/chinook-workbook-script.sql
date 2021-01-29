@@ -64,13 +64,35 @@ delete from "Customer" where "FirstName" = 'Robert' and "LastName" = 'Walker';
 * SQL functions
 ***********************/
 
-select current_time;
-select mt."Name", length(mt."Name") from "MediaType" mt;
+create or replace function getTime()
+returns time with time zone as $gt$
+	select current_time
+$gt$ language sql;
 
-select avg(i."Total")  as "Average invoice total" from "Invoice" i;
-select max(t."UnitPrice") as "Highest_price", t."Name" from "Track" t
-group by t."Name"
-order by max(t."UnitPrice") desc;
+select getTime();
+
+create or replace function getLengthMediaType()
+returns table (name varchar, mediaLength integer) as $glmt$
+	select mt."Name", length(mt."Name") from "MediaType" mt;
+$glmt$ language sql;
+
+select * from getLengthMediaType();
+
+create or replace function averageInvoiceTotal() 
+returns numeric as $ait$
+	select avg(i."Total")  as "Average invoice total" from "Invoice" i
+$ait$ language sql;
+
+select averageInvoiceTotal();
+
+create or replace function highestPricedTrack()
+returns table (highestPrice numeric, name varchar) as $hpt$
+	select max(t."UnitPrice"), t."Name" from "Track" t
+	group by t."UnitPrice", t."Name" 
+	order by max(t."UnitPrice") desc;
+$hpt$ language sql;
+
+select * from highestPricedTrack();
 
 create or replace function averagePriceInvoiceLine()
 returns numeric as $apil$
@@ -85,7 +107,7 @@ returns table (firstname varchar, lastname varchar, date timestamp) as $emp$
 		where (select extract(isoyear from e."BirthDate")) > 1968
 $emp$ language sql;
 
-select bornAfter1968();
+select * from bornAfter1968();
 
 /**********************
 * Section 5
