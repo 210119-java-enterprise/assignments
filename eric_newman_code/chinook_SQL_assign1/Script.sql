@@ -116,10 +116,30 @@ join "Invoice" ord -- keyword inner is always implied if nothing specified
 on cus."CustomerId" = ord."CustomerId";
 --5.2 OUTER
 --Task – Create an outer join that joins the customer and invoice table, specifying the CustomerId, firstname, last name, invoiceId, and total.
-
+SELECT Cus."CustomerId", Cus."FirstName", Cus."LastName", inv."InvoiceId", inv."Total"
+FROM "Customer" cus
+FULL OUTER JOIN "Invoice" inv ON Cus."CustomerId" = inv."CustomerId";
 --5.3 RIGHT
---Task – Create a right join that joins album and artist specifying artist name and title.
+--Task – Create a right join that joins album and artist specifying artist name and title
+select art."Name", alb."Title"
+from "Artist" art
+right join "Album" alb
+on art."ArtistId" = alb."ArtistId";
 --5.4 CROSS
---Task – Create a cross join that joins album and artist and sorts by artist name in ascending order.
+--Task – Create a cross join that joins album and artist and sorts by artist name in ascending order
+select *
+from "Album"
+cross join "Artist" art
+order by art."Name" asc;
 --5.5 SELF
 --Task – Perform a self-join on the employee table, joining on the reports to column.
+SELECT *
+FROM "Employee" e1, "Employee" e2
+where e1."ReportsTo" = e2."ReportsTo"
+order by e1."ReportsTo";
+
+select e1."FirstName", e1."LastName", e1."Title", e2."FirstName", e2."LastName", e2."Title" 
+from "Employee" e1
+join "Employee" e2
+on e1."ReportsTo" = e2."EmployeeId"; 
+
