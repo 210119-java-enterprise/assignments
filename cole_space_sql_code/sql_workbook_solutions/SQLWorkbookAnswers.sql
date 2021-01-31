@@ -125,19 +125,20 @@ language plpgsql;
 select time_current();
 
 /*Task – create a function that returns the length of a mediatype from the mediatype table*/
+--drop function length_of_mediatype();
 create or replace function length_of_mediatype()
-returns table (media_length int)
+returns table (media_name varchar, media_length int)
 as
 $$
 	begin 
 		return query
-			select length("Name")
+			select "Name", length("Name")
 			from "MediaType";
 	end
 $$
 language plpgsql;
 
-select length_of_mediatype();
+select * from length_of_mediatype();
 
 /*Problem 3.2*/
 
