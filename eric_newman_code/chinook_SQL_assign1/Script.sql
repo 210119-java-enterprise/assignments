@@ -62,14 +62,55 @@ delete from "Customer" where "FirstName" = 'Robert' and "LastName" = 'Walter';
 --In this section you will be using the PostGreSQL system functions, as well as your own functions, to perform various actions against the database
 --3.1 System Defined Functions
 --Task – Create a function that returns the current time.
-select current_time;
+create or replace function curTime()
+returns time
+as $$
+begin 
+    return current_time;
+end
+$$ language plpgsql;
+select curTime();
 --Task – create a function that returns the length of a mediatype from the mediatype table
-select "Name", length("Name") as "Media Length" from "MediaType";
+--drop function mediaLen();
+create or replace function mediaLen()
+returns table (media_name varchar, media_len int)
+as $$
+begin 
+   	return query 
+		select "Name", length("Name") as "Media Length" from "MediaType";
+end
+$$ language plpgsql;
+
+select * from mediaLen();
 --3.2 System Defined Aggregate Functions
 --Task –Create a function that returns the average total of all invoices
-select avg("Total") as "Avg all invoices" from "Invoice";
+--drop function avgInvoice();
+
+create or replace function avgInvoice()
+returns table (average numeric)
+as $$
+begin 
+   	return query 
+		select avg("Total") as "Avg all invoices" from "Invoice";
+end
+$$ language plpgsql;
+
+select avgInvoice();
 --Task – Create a function that returns the most expensive track
-select "Name" , "UnitPrice" from "Track" where "UnitPrice" = (select max("UnitPrice") from "Track");
+--drop function expTrack();
+
+create or replace function expTrack()
+returns table (TrackName varchar, UnitPrice numeric)
+as $$
+begin 
+   	return query 
+		select "Name" , "UnitPrice" from "Track" where "UnitPrice" = (select max("UnitPrice") from "Track");
+end
+$$ language plpgsql;
+
+select * from expTrack();
+
+
 --3.3 User Defined Scalar Functions
 --Task – Create a function that returns the average price of invoice-line items in the invoice-line table
 --select * from "InvoiceLine";
