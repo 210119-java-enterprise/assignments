@@ -1,8 +1,9 @@
-public class BinaryTree<T> {
+public class EnhancedBinaryTree<T> {
 
     private class Node<T> {
         T data;
         Node<T> myLeft, myRight;
+        int count;
 
         public Node() {
             myLeft = myRight = null;
@@ -11,6 +12,7 @@ public class BinaryTree<T> {
         public Node(T data) {
             this();
             this.data = data;
+            count = 1;
         }
 
         
@@ -20,7 +22,7 @@ public class BinaryTree<T> {
     private int size;
 
 
-    public BinaryTree() {
+    public EnhancedBinaryTree() {
         super();
         headNode = null;
         size = 0;
@@ -28,7 +30,7 @@ public class BinaryTree<T> {
 
     /**
      * Takes in data of type T and adds it to the tree
-     * If there is a node with data already in the tree, adds new node with same data to it's left
+     * If there is a node with data already in the tree, increases count on that node by 1
      * @param data
      */
     public void add(T data) {
@@ -40,13 +42,18 @@ public class BinaryTree<T> {
 
     private Node<T> addRecursive(Node<T> current, T data) {
         if (current == null) {
+            size++;
             return new Node<T>(data);
         }
 
-        if (data.hashCode() <= current.data.hashCode()) {
+
+        if (data.hashCode() < current.data.hashCode()) {
             current.myLeft = addRecursive(current.myLeft, data);
-        } else {
+        } else if (data.hashCode() > current.data.hashCode()) {
             current.myRight = addRecursive(current.myRight, data);
+        } else {
+            current.count++;
+            size++;
         }
 
         return current;
@@ -92,10 +99,16 @@ public class BinaryTree<T> {
     }
 
     private Node<T> removeRecursive(Node<T> current, T data) {
+        // data is not in tree
         if (current == null) {
             return null;
         }
         if (data.hashCode() == current.data.hashCode()) {
+            if (current.count > 1) {
+                current.count--;
+                size--;
+                return current;
+            }
             // Node has no children
             if (current.myLeft == null && current.myRight == null) {
                 size--;
