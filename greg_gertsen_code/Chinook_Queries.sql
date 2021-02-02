@@ -95,21 +95,92 @@ delete from "Customer" where "FirstName" = 'Robert' and "LastName" = 'Walter';
 --3.1 System Defined Functions
 --Task – Create a function that returns the current time.
 
+create or replace function time_return() returns text as
+'
+
+begin 
+	return current_timestamp;
+end
+'
+language plpgsql;
+
+select time_return();
+
+
 --Task – create a function that returns the length of a mediatype 
 --from the mediatype table
 
+create or replace function length_media_type(id int) returns int as 
+$$
+	begin
+		return (select length("Name")
+				from "MediaType"
+				where "MediaTypeId" = id);
+	end
+$$
+language plpgsql;
 
+select length_media_type(1);
 --3.2 System Defined Aggregate Functions
 --Task –Create a function that returns the average total of all invoices 
 
+
+create or replace function av_total() returns numeric 
+as 
+$$
+begin
+	return (select avg("Total")from "Invoice");
+end
+$$
+language plpgsql;
+
+select av_total();
 --Task – Create a function that returns the most expensive track
+
+create or replace function most_exp() returns text as 
+$$
+begin 
+	return (select "Name" from "Track" t where t."UnitPrice" =(select max("UnitPrice") from "Track") limit 1);
+end
+$$
+
+language plpgsql;
+
+select most_exp();
 
 --3.3 User Defined Scalar Functions
 --Task – Create a function that returns the average price of invoice-line
 -- items in the invoice-line table
 
+create or replace function av_price_invoice_li()
+returns numeric
+as
+$$
+begin 
+	return (select avg("UnitPrice") from "InvoiceLine");
+end
+$$
+
+language plpgsql;
+
+select av_price_invoice_li();
+
 --3.4 User Defined Table Valued Functions
 --Task – Create a function that returns all employees who are born after 1968.
+
+create or replace function born_after_1968()
+
+returns setof "Employee"
+as 
+$$
+	begin 
+		return query (select *
+				from "Employee"
+				where "BirthDate" > '1968-12-31');
+	end
+$$ language plpgsql;
+
+select born_after_1968();
 
 --5.0 JOINS
 --In this section you will be working with combining various tables through the use of joins. 
@@ -120,19 +191,38 @@ delete from "Customer" where "FirstName" = 'Robert' and "LastName" = 'Walter';
 --Task – Create an inner join that joins customers and orders and specifies the name of 
 --the customer and the invoiceId.
 
+select c."FirstName", c."LastName" , i."InvoiceId" from "Customer" c join "Invoice" i 
+on c."CustomerId"=i."CustomerId" order by c."FirstName" asc;
+
 --5.2 OUTER
 --Task – Create an outer join that joins the customer and invoice table, 
 --specifying the CustomerId, firstname, last name, invoiceId, and total.
+
+select c."CustomerId", c."FirstName", c."LastName", i."InvoiceId", i."Total" from "Customer" c full outer join "Invoice" i 
+on c."CustomerId"=i."CustomerId" order by "FirstName" asc;
 
 --5.3 RIGHT
 --Task – Create a right join that joins album and artist specifying artist 
 --name and title.
 
+select a."Title", ar."Name" from "Album" a right join "Artist" ar on a."ArtistId" =ar."ArtistId";
+
 --5.4 CROSS
 --Task – Create a cross join that joins album and artist and sorts by
 -- artist name in ascending order.
 
+select * from "Album" al cross join "Artist" ar
+order by ar."Name" asc;
+
+
 --5.5 SELF
 --Task – Perform a self-join on the employee table, joining on the reports to column.
+
+SELECT * FROM "Employee" a, "Employee" b 
+WHERE a."ReportsTo" = b."ReportsTo" ;
+
+
+
+
 
 
