@@ -1,0 +1,232 @@
+--DONE-- Select all records from the Employee table.
+select*from "Employee";
+
+--DONE-- Select all records from the Employee table where last name is King
+select*from "Employee"  
+where "LastName" = 'King';
+
+--DONE-- Select all records from the Employee table where first name is Andrew and REPORTSTO is NULL.
+select*from "Employee" e  
+where "FirstName" = 'Andrew' and "ReportsTo" is null;
+
+--DONE-- Select all albums in album table and sort result set in descending order
+select*from "Album" a 
+order by a."Title" desc;
+
+--DONE-- Select first name from Customer and sort result set in ascending order
+select "FirstName" from "Customer" c 
+order by c."FirstName" asc;
+
+--DONE-- Insert two new records into Genre table
+insert into "Genre"("GenreId", "Name")
+values
+	(26,'Psychobilly'),
+	(27,'Funk');
+
+--DONE-- Insert two new records into Employee table
+insert into "Employee" ("EmployeeId","LastName","FirstName","Title","ReportsTo","BirthDate","HireDate","Address","City","State","Country","PostalCode","Phone","Fax","Email")
+values 
+	(9,'Johnson','Brandon','IT Staff',10,'1989-06-24','2020-04-18','116 Old Jay Hill Rd','Jay','ME','Murica','04239','1 (234) 567-8910','1 (000) 000-0000','me@yourmomshouse.edu'),
+	(10,'Pryme','Valerie','Boss Lady',null,'1995-06-30','2020-04-18','Some rd','Beaver Dam','WI','Murica','96333','1 (213) 141-5161','1 (111) 111-1111','me@yourmomshouse.edu');
+
+--DONE-- Insert two new records into Customer table
+insert into "Customer" ("CustomerId", "FirstName", "LastName", "Company", "Address", "City", "State", "Country", "PostalCode", "Phone", "Fax", "Email", "SupportRepId") 
+values
+	(60, 'Wang', 'Chung', 'PanHandlers United', 'Wherever the road takes me', 'Unsure', null, 'ImLost', '8675309', '+1 (121) 212-1212', null, 'payme@nao.com', 3),
+	(61, 'Tammy', 'Twotones', 'HopelessHelpline' ,'123 long dirt road', 'townshire', 'stateland','NoIdea', '45678', '+1 231 321-3222',null, 'email@thisaddr.ok', 5);
+
+--DONE-- Update Aaron Mitchell in Customer table to Robert Walter
+update "Customer"   
+set "FirstName" = 'Robert', "LastName" = 'Walter'
+where "FirstName" = 'Aaron' and "LastName" = 'Mitchell';
+
+--DONE-- Update name of artist “Creedence Clearwater Revival” to “CCR”
+update "Artist" 
+set "Name" = 'CCR'
+where "Name" = 'Creedence Clearwater Revival';
+
+--DONE-- Select all invoices with a billing address like “T”
+select*from "Invoice" i 
+where "BillingAddress" like 'T%';
+
+--DONE-- Select all invoices that have a total between 15 and 50
+select*from "Invoice" i
+where "Total" between 15 and 50;
+
+--DONE-- Select all employees hired between 1​ st​ of June 2003 and 1​ st​ of March 2004
+select*from "Employee" e 
+where "HireDate" between '2003-06-01' and '2004-03-01';
+
+-----2.7 DELETE
+-- Delete a record in Customer table where the name is Robert Walter (There may be constraints that rely on this, find out how to resolve them).
+alter table "Invoice"
+drop constraint "FK_InvoiceCustomerId";
+
+alter table "Invoice"
+add constraint "FK_InvoiceCustomerId"
+foreign key ("CustomerId") 
+references "Customer" ("CustomerId") on delete cascade;
+
+alter table "InvoiceLine" 
+drop constraint "FK_InvoiceLineInvoiceId";
+
+alter table "InvoiceLine"
+add constraint "FK_InvoiceLineInvoiceId"
+foreign key ("InvoiceId") 
+references "Invoice" ("InvoiceId") on delete cascade;
+
+delete 
+from "Customer"
+where "FirstName" = 'Robert' and "LastName" = 'Walter';
+
+--DONE-- Create a function that returns the current time.
+create or replace function cur_time()
+returns time
+as $$
+	begin
+		return current_time;
+	end
+$$
+language plpgsql;
+
+select cur_time();
+
+--DONE-- create a function that returns the length of a mediatype from the mediatype table --
+
+create or replace function length_of_mediatype()
+returns numeric 
+as $$
+
+begin 
+    return length("Name") 
+    from "MediaType" 
+    limit 1;
+end
+
+$$
+language plpgsql;
+
+select length_of_mediatype()
+
+
+select "Name",Length("Name") 
+from "MediaType" m;
+
+-----3.2 System Defined Aggregate Functions
+--DONE-- Create a function that returns the average total of all invoices
+create or replace function get_avg_invoice()
+returns numeric
+as $$
+	declare 
+		avg_price numeric;
+
+	begin
+		select avg("Total")
+		into avg_price
+		from "Invoice";
+		return avg_price;
+	end
+$$
+language plpgsql;
+
+select get_avg_invoice();
+
+--DONE-- Create a function that returns the most expensive track
+create or replace function get_max_price()
+returns setof "Track"
+as $$
+	declare 
+		max_price numeric;
+	begin
+		select max(t1."UnitPrice")
+		from "Track" t1
+		into max_price;
+		
+		return query
+		select *
+		from "Track" t2
+		where t2."UnitPrice" =max_price;
+	end
+$$
+language plpgsql;
+
+
+select get_max_price();
+
+-----3.3 User Defined Scalar Functions
+--DONE-- Create a function that returns the average price of invoice-line items in the invoice-line table
+create or replace function get_avg_invoice_price()
+returns numeric
+as $$
+	declare 
+		avg_price numeric;
+
+	begin
+		select avg("UnitPrice")
+		into avg_price
+		from "InvoiceLine";
+		return avg_price;
+	end
+$$
+language plpgsql;
+
+
+select get_avg_invoice_price();
+
+
+-----3.4 User Defined Table Valued Functions
+--DONE-- Create a function that returns all employees who are born after 1968.
+create or replace function emps1968()
+returns setof "Employee"
+as $$
+	begin
+		return query
+		select*
+		from "Employee"
+		where "BirthDate">'1968-12-31';
+	end
+$$
+language plpgsql;
+
+select emps1968();
+
+
+--DONE-- Create an inner join that joins customers and orders and specifies the name of the customer and the invoiceId.
+select c."FirstName", c."LastName", i."InvoiceId"
+from "Customer" c
+join "Invoice" i
+on i."CustomerId" = c."CustomerId";
+
+
+--DONE-- Create an outer join that joins the customer and invoice table, specifying the CustomerId, firstname, last name, invoiceId, and total.
+select c."CustomerId", c."FirstName", c."LastName", i."InvoiceId", i."Total"
+from "Customer" c
+full join "Invoice" i
+on i."CustomerId" = c."CustomerId";
+
+-----5.3 RIGHT
+-- Create a right join that joins album and artist specifying artist name and title.
+select art."Name", alb."Title"
+from "Artist" art
+right join "Album" alb
+on art."ArtistId" =alb."ArtistId";
+
+
+
+--DONE-- Create a cross join that joins album and artist and sorts by artist name in ascending order.
+select art."Name", alb."Title"
+from "Artist" art
+cross join "Album" alb 
+where alb."ArtistId" = art."ArtistId"
+order by art."Name" asc; 
+
+-----5.5 SELF
+-- Perform a self-join on the employee table, joining on the reports to column.
+select e1."FirstName", e1."LastName",e1."Title",e2."FirstName", e2."LastName",e2."Title"
+from "Employee" e1
+join "Employee" e2 
+on e1."ReportsTo" = e2."EmployeeId";
+
+
+
+
