@@ -59,7 +59,7 @@ public class BST<T extends Comparable<T>> {
         root = removeHelper(root, data);
     }
 
-    private Node removeHelper(Node<T> current, T value) {
+    private Node<T> removeHelper(Node<T> current, T value) {
         if (current == null) {
             size--;
             return null;
