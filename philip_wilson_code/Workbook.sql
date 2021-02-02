@@ -29,47 +29,121 @@ SELECT * FROM invoice WHERE billing_address LIKE 'T%';
 
 -->2.6
 SELECT * FROM invoice WHERE total BETWEEN '15' AND '50';
-SELECT * FROM employee WHERE hire_date BETWEEN '2003-01-06 00:00:00' AND '2004-01-03';
+SELECT * FROM employee WHERE hire_date BETWEEN '2003-06-01 00:00:00' AND '2004-03-01';
 
 -->2.7
 DELETE FROM customer WHERE first_name ='Robert'AND last_name ='Walter';
+
+
+
+
+
 
 
 -->SQL Functions
 
 -->3.1
 SELECT current_timestamp;
-SELECT * FROM media_type ;
-SELECT name, length(name) FROM media_type;
+
+SELECT name, length(name) 
+FROM media_type;
 
 -->3.2
-SELECT avg(total) FROM invoice;
-SELECT *FROM playlist_track;
-SELECT max(unit_price) FROM track;
+SELECT avg(total) 
+FROM invoice;
+
+
+SELECT max(unit_price) 
+FROM track;
 
 -->3.3
-SELECT avg(unit_price) FROM invoice_line;
+
+CREATE OR REPLACE FUNCTION InvoiceAvg()
+RETURNS NUMERIC 
+AS 
+'
+	declare
+		result numeric;
+	begin
+		SELECT avg(unit_price) 
+		into result
+		FROM invoice_line;
+		
+		return result;
+	end
+
+'language plpgsql;
+
+SELECT InvoiceAvg();
+
+
 
 -->3.4
-SELECT * FROM employee WHERE birth_date >= '1968-30-12' ;
+
+CREATE OR REPLACE FUNCTION after_1968()
+RETURNS TEXT 
+AS 
+'
+	
+	begin
+		
+		SELECT * 
+		FROM employee 
+		WHERE birth_date > '1968-12-30' ;
+		
+	end
+
+'
+language plpgsql;
+
+SELECT after_1968();
+
+SELECT * 
+FROM employee 
+WHERE birth_date > '1968-12-30' ;
+
+
+
+
+
+
+
 
 -->joins
 
--->inner join
-SELECT * FROM invoice i ;
-SELECT customer.customer_id ,invoice_line.invoice_id FROM customer INNER JOIN invoice_line ON customer .customer_id =invoice_line .invoice_id;
+-->inner join 5.1
+SELECT* 
+FROM invoice i ;
 
--->outer join
-SELECT customer.customer_id ,customer.first_name, customer.last_name,invoice.invoice_id, invoice.total FROM customer FULL OUTER JOIN invoice ON customer .customer_id =invoice.invoice_id;
+SELECT customer.customer_id ,invoice_line.invoice_id 
+FROM customer 
+INNER JOIN invoice_line 
+ON customer .customer_id =invoice_line .invoice_id;
 
--->Right join 
+-->outer join 5.2
+SELECT customer.customer_id ,customer.first_name, customer.last_name,invoice.invoice_id, invoice.total 
+FROM customer 
+FULL OUTER JOIN invoice 
+ON customer .customer_id =invoice.invoice_id;
 
-SELECT album.title, artist.name FROM album RIGHT JOIN artist ON album.title =artist.name;
+-->Right join 5.3
 
--->cross
-SELECT album.title, artist.name FROM album CROSS JOIN artist ORDER BY artist.name ASC ;
+SELECT album.title, artist.name 
+FROM album 
+RIGHT JOIN artist 
+ON album.title =artist.name;
 
--->self
-SELECT e1.reports_to AS reportsto1,e2.reports_to AS reportsto2 FROM employee e1,employee e2 WHERE e1.reports_to =e2.reports_to;
+-->cross5.4
+SELECT album.title, artist.name 
+FROM album 
+CROSS JOIN artist 
+ORDER BY artist.name ASC ;
+
+-->self 5.5
+SELECT e1.first_name, e1.last_name ,e1.title ,e2.first_name ,e2.last_name ,e2.title 
+FROM employee e1
+JOIN employee e2 
+ON e1.reports_to =e2.employee_id ;
+
 
 
