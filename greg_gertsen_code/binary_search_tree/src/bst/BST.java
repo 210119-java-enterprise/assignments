@@ -14,9 +14,13 @@ public class BST<T extends Comparable<T>> {
     Node<T> root;
 
     public void insert(T value){
+
+        //Calling this root seems a bit weird after first call
+        //Would creating a new node and assigning to root be better?
         root = insertionHelper(root, value);
     }
 
+    //Calling the Node <T> parameter 'current' would prob be better
     public Node<T> insertionHelper(Node<T> root, T value) {
 
         if (root == null){
@@ -56,9 +60,12 @@ public class BST<T extends Comparable<T>> {
      */
     public void remove(T data){
 
+        //Calling this root seems a bit weird after first call
+        //Would creating a new node and assigning to root be better?
         root = removeHelper(root, data);
     }
 
+    
     private Node<T> removeHelper(Node<T> current, T value) {
         if (current == null) {
             size--;
