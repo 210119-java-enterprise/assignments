@@ -20,7 +20,7 @@ public class Run {
 
         System.out.println(tree.contains(5));
         System.out.println(tree.contains(6));
-        
+
         System.out.println(tree.size());
 
 
