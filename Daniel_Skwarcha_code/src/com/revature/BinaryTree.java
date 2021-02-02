@@ -10,7 +10,43 @@ public class BinaryTree <T extends Comparable<? super T>> {
         if (data == null) {
             return;
         }
-        root = traverseInsert(root, data);
+        if (root == null)
+        {
+            root = new Node(data, null, null);
+            size+=1;
+            return;
+        }
+
+        Node tempNode = root;
+        Node previousNode = root;
+        boolean movedLeft = false;
+        while(tempNode != null)
+        {
+            // data in parameter is greater than data in current node
+            if (tempNode.data.compareTo(data) < 0 || tempNode.data.compareTo(data) == 0) {
+                previousNode = tempNode;
+                tempNode = tempNode.rightChild;
+                movedLeft = false;
+                //tempNode.rightChild = traverseInsert(tempNode.rightChild, data);
+            } else if (tempNode.data.compareTo(data) > 0) { // data in parameter is less than data in node
+                previousNode = tempNode;
+                tempNode = tempNode.leftChild;
+                movedLeft = true;
+                //tempNode.leftChild = traverseInsert(tempNode.leftChild, data);
+            }
+        }
+
+        tempNode = new Node(data, null, null);
+        if (root!= null && movedLeft == true)
+        {
+            previousNode.leftChild = tempNode;
+        }
+        else if (root != null && movedLeft == false)
+        {
+            previousNode.rightChild = tempNode;
+        }
+        size+=1;
+       // root = traverseInsert(root, data);
     }
 
     private Node traverseInsert(Node node, Comparable<T> data) {
@@ -36,7 +72,33 @@ public class BinaryTree <T extends Comparable<? super T>> {
         {
             return false;
         }
-        if(containsTraverse(root, data) == null)
+//        if(containsTraverse(root, data) == null)
+//        {
+//            return false;
+//        }
+//        else
+//        {
+//            return true;
+//        }
+        Node tempNode = root;
+        while(tempNode != null)
+        {
+            // data in parameter is greater than data in current node
+            if (tempNode.data.compareTo(data) == 0)
+            {
+                break;
+            }
+            if (tempNode.data.compareTo(data) < 0) {
+                tempNode = tempNode.rightChild;
+
+                //tempNode.rightChild = traverseInsert(tempNode.rightChild, data);
+            } else if (tempNode.data.compareTo(data) > 0) { // data in parameter is less than data in node
+                tempNode = tempNode.leftChild;
+                //tempNode.leftChild = traverseInsert(tempNode.leftChild, data);
+            }
+        }
+
+        if(tempNode == null)
         {
             return false;
         }
@@ -44,6 +106,7 @@ public class BinaryTree <T extends Comparable<? super T>> {
         {
             return true;
         }
+
     }
 
     private Node containsTraverse(Node node, Comparable<T> data) {
@@ -74,7 +137,87 @@ public class BinaryTree <T extends Comparable<? super T>> {
             return;
         } // if
 
-        traverseRemove(root, data);
+       // traverseRemove(root, data);
+        if (root == null) {
+            return;
+        }
+
+
+        Node tempNode = root;
+        Node previousNode = root;
+        boolean movedLeft = false;
+
+        while(tempNode != null)
+        {
+            // data in parameter is greater than data in current node
+            if (tempNode.data.compareTo(data) == 0)
+            {
+                break;
+            }
+            if (tempNode.data.compareTo(data) < 0) {  // data in parameter is greater than data in current node,
+                previousNode = tempNode;
+                tempNode = tempNode.rightChild;
+                movedLeft = false;
+
+                //tempNode.rightChild = traverseInsert(tempNode.rightChild, data);
+            } else if (tempNode.data.compareTo(data) > 0) { // data in parameter is less than data in node
+                previousNode = tempNode;
+                tempNode = tempNode.leftChild;
+                movedLeft = true;
+                //tempNode.leftChild = traverseInsert(tempNode.leftChild, data);
+            }
+        }
+
+        if(tempNode == null) {
+            return;
+        }
+
+        if(tempNode.leftChild == null){
+            size-=1;
+            if (movedLeft = true) {
+                previousNode.leftChild = tempNode.rightChild;
+            }
+            else {
+                previousNode.rightChild = tempNode.rightChild;
+            }
+
+        }
+        else if (tempNode.rightChild == null) {
+            size-=1;
+            if (movedLeft = true) {
+                previousNode.leftChild = tempNode.leftChild;
+            }
+            else {
+                previousNode.rightChild = tempNode.leftChild;
+            }
+        }
+        else {
+            size-=1;
+            Node tempNode2 = tempNode.rightChild;
+            tempNode.data = tempNode2.data;
+            previousNode = tempNode.rightChild;
+            while(tempNode2.leftChild != null)
+            {
+                tempNode.data = tempNode2.leftChild.data;
+                previousNode = tempNode2;
+                tempNode2 = tempNode2.leftChild;
+            } // while
+
+            //tempNode2 = null;
+
+            if(tempNode2.leftChild == null){
+
+                    previousNode.leftChild = tempNode2.rightChild;
+                    tempNode2 = null;
+            }
+        }
+
+
+
+
+
+
+
     } // remove()
 
     private Node traverseRemove(Node node, Comparable<T> dataToRemove) {
@@ -103,6 +246,7 @@ public class BinaryTree <T extends Comparable<? super T>> {
             } // else if
             size-=1;
             Node tempNode = node.rightChild;
+            node.data = tempNode.data;
             while(tempNode.leftChild != null)
             {
                 node.data = tempNode.leftChild.data;

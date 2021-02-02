@@ -26,8 +26,8 @@ public class Driver {
         System.out.println("Removed 35");
         System.out.println("Size of tree" + myTree.size());
 
-        System.out.println("75 in is in the tree: " + myTree.contains(75));
-        System.out.println("35 is in the tree " + myTree.contains(35));
+        System.out.println("35 in is in the tree: " + myTree.contains(35));
+        System.out.println("45 is in the tree " + myTree.contains(45));
 
     }
 }
