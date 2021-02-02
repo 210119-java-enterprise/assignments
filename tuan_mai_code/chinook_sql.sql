@@ -29,7 +29,12 @@ insert into "Genre" values
 	('27', 'Dubstep');
 -------------------------------------------------
 insert into "Employee" values
-	('9', )
+	(9, 'Mike', 'Looop', 'IT Staff', 6, '1995/12/12 11:11:35', '2020-10-02 15:00:00', '123 address here', 'City', 'TX', 'USA', '75555', '+1 (214) 546-2321', '+1 (214) 651-3215', 'mike@chinookcorp.com'),
+	(10, 'Geeeed', 'king', 'IT Staff', 6, '1996/11/02 11:11:25', '20200-10-01 16:00:00', '452 adress Drive', 'City', 'TX', 'USA', '77856', '+1 (214) 352-4567', '+1 (214) 365-4154', 'geeed@chinookcorp.com');
+------------------------------------------------
+insert into "Customer" values
+	(60, 'Lol', 'Nuke', null, '323 street', 'Garland', 'TX', 'US', null, '+216 603 6458', null, 'Lol@gmail.com', 3),
+	(61, 'Look','Here', null, '574 hallway', 'Dallas', 'TX', 'US', null, '+698 546 3222', null, 'Look@gmail.com', 3);
 	
 /* 2.4 UPDATE */
 update "Customer" set 
@@ -177,31 +182,98 @@ select avg_invoice();
 ----------------------------------------------
 
 select *
-from "Track" t 
+from "Track" t ;
+
+drop function max_track();
 
 create or replace function max_track()
-	returns text
+	returns table(TrackId int4, Name varchar(200), AlbumId int4, MediaTypeId int4, GenreId int4, Composer varchar(220), Milliseconds int4, Bytes int4, UnitPrice numeric(10,2))
 	as 
 	$$
-	declare 
-		largest int;
-		result text;
 	begin
-		select MAX("UnitPrice")
-		into largest
-		from "Track";
-	
-		select *
-		into result
-		from "Track"
-		where "UnitPrice" = largest;
-		
-		return result;
+		return Query
+			select *
+			from "Track"
+			where "UnitPrice" >=
+				(
+					select max("UnitPrice")
+					from "Track"
+				);
+			
 	end
 	$$
 	language plpgsql;
 
 select max_track();
+
+-----------------------------------------
+/* 3.3 User Defined Scalar Functions */
+select *
+from "InvoiceLine" il;
+
+create or replace function avg_invoice_line()
+	returns numeric(8,6)
+	as $$
+		declare 
+			avgInvoiceLine numeric(8,6);
+		begin 
+			select avg("UnitPrice")
+			into avgInvoiceLine
+			from "InvoiceLine";
+		
+			return avgInvoiceLine;	
+		end
+	$$
+	language plpgsql;
+
+select avg_invoice_line();
+
+/* 3.4 User Defined Table Valued Functions */
+
+create or replace function born_after_1968()
+	returns table(FirstName varchar(20), LastName varchar(20))
+	as $$
+		begin
+			return Query
+				select "FirstName", "LastName"
+				from "Employee"
+				where "BirthDate" > '1968/12/31 23:59:59';
+		end
+	$$
+	language plpgsql;
+	
+select born_after_1968();
+
+/* 5.1 INNER */
+
+select C."FirstName", C."LastName", I."InvoiceId"
+from "Customer" C
+inner join "Invoice" I
+on C."CustomerId" = I."CustomerId" ;
+
+/* 5.2 OUTER */
+
+select C."CustomerId", C."FirstName", C."LastName", I."InvoiceId", I."Total"
+from "Customer" C
+full outer join "Invoice" I
+on C."CustomerId" = I."CustomerId"; 
+
+/* 5.3 RIGHT */
+select ar."Name", aL."Title"
+from "Artist" ar
+right join "Album" aL
+on ar."ArtistId" = aL."ArtistId";
+
+/* 5.4 CROSS */
+select *
+from "Artist" a
+cross join "Album" a2
+order by a."Name" asc;
+
+/* 5.5 SELF */
+select *
+from "Employee" e, "Employee" e2 
+where e."ReportsTo" = e."ReportsTo"
 
 commit;
 
