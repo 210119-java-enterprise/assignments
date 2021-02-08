@@ -6,7 +6,7 @@ Serves as the main assignment repository for disseminating requirements and gath
 
 1. Clone this repository to your local machine by executing the following command in the desired location (preferrably within a folder designated for all training repositories): 
 
-| `git clone https://github.com/200727-java-ng-usf/assignments`
+| `git clone https://github.com/210119-java-enterprise/assignments`
 
 2. Change into the newly cloned repository using the `cd` command:
 
