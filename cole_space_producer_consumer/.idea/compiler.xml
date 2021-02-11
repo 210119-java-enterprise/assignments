@@ -6,7 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="cole_space_producer_consumer" />
+        <module name="cole_phillip_kalyb_producer_consumer" />
       </profile>
     </annotationProcessing>
   </component>
