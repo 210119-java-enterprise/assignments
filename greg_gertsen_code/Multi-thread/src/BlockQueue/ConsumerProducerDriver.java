@@ -27,7 +27,7 @@ public class ConsumerProducerDriver {
         Thread producerThread = new Thread(produceTask);
         Thread consumerThread = new Thread(consumeTask);
 
-        // 0-10 (10 being highest, 0 being lowest, 5 being default) Just a suggestion to JVM
+        //A 0-10 priority
         producerThread.setPriority(8);
         consumerThread.setPriority(3);
 
