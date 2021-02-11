@@ -19,15 +19,20 @@ public class Producer {
             semaphore.acquire();
             if (buffer.isFull()) {
                 System.out.println("Buffer is full");
-                this.wait();
+                semaphore.release();
+                while(buffer.isFull()){};
+                try {
+                    semaphore.acquire();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
             }
-            buffer.getBufferArray()[buffer.getCount()] = new Random().nextInt();
-            buffer.incrementCount();
-
-            System.out.println("Produced new value");
-            semaphore.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        buffer.getBufferArray()[buffer.getCount()] = new Random().nextInt();
+        buffer.incrementCount();
+        System.out.println("Produced new value");
+        semaphore.release();
     }
 }

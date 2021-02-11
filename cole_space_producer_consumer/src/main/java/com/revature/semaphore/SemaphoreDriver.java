@@ -7,7 +7,7 @@ public class SemaphoreDriver {
 
     public static void main(String[] args) throws InterruptedException {
 
-        final Semaphore semaphore = new Semaphore(1);
+        final Semaphore semaphore = new Semaphore(1, true);
         CustomBuffer buffer = new CustomBuffer();
 
         Producer producer = new Producer(buffer, semaphore);

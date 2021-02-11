@@ -18,15 +18,21 @@ public class Consumer {
             semaphore.acquire();
             if (buffer.isEmpty()) {
                 System.out.println("Buffer is empty");
-                this.wait();
+                semaphore.release();
+                while(buffer.isEmpty()){};
+                try{
+                    semaphore.acquire();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
             }
-            buffer.getBufferArray()[buffer.getCount() - 1] = 0;
-            buffer.decrement();
-
-            System.out.println("Consumed value");
-            semaphore.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        buffer.getBufferArray()[buffer.getCount() - 1] = 0;
+        buffer.decrement();
+
+        System.out.println("Consumed value");
+        semaphore.release();
     }
 }
