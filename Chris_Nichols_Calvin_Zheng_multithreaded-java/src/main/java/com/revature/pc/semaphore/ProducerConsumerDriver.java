@@ -7,7 +7,7 @@ public class ProducerConsumerDriver {
     public static void main(String[] args) throws InterruptedException {
 
         CustomBuffer buffer = new CustomBuffer();
-        final Semaphore sem = new Semaphore(1);
+        final Semaphore sem = new Semaphore(1,true);
 
         Producer producer = new Producer(buffer,sem);
         Consumer consumer = new Consumer(buffer,sem);
