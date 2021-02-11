@@ -4,8 +4,8 @@ import java.util.concurrent.Semaphore;
 
 public class Consumer {
 
-    private CustomBuffer buffer;
-    private Semaphore sem;
+    private final CustomBuffer buffer;
+    private final Semaphore sem;
 
     public Consumer(CustomBuffer buffer,Semaphore sem) {
         this.buffer = buffer;

@@ -13,7 +13,7 @@ public class Consumer {
 
     public void consume() {
         try {
-             buffer.take(0);
+             buffer.take();
             System.out.println("Consumed new value. Notifying monitor.");
         } catch (Exception e) {
             e.printStackTrace();
