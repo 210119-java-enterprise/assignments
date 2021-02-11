@@ -13,9 +13,6 @@ public class Consumer {
 
     public void consume() {
         try {
-            while(buffer.isEmpty()) {
-                System.out.println("Buffer is empty, pausing consumer thread.");
-            }
              buffer.remove(0);
             System.out.println("Consumed new value. Notifying monitor.");
         } catch (Exception e) {

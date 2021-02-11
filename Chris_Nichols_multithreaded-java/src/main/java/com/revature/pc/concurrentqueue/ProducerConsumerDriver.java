@@ -6,7 +6,7 @@ public class ProducerConsumerDriver {
 
     public static void main(String[] args) throws InterruptedException {
 
-        LinkedBlockingQueue<Integer> buffer = new LinkedBlockingQueue<>();
+        LinkedBlockingQueue<Integer> buffer = new LinkedBlockingQueue<>(10);
 
         Producer producer = new Producer(buffer);
         Consumer consumer = new Consumer(buffer);

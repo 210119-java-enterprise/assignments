@@ -12,10 +12,7 @@ public class Producer {
 
     public void produce() {
         try {
-            while(buffer.size() > 10) {
-                System.out.println("Buffer full, pausing producer thread.");
-            }
-            buffer.add(1);
+            buffer.put(1);
             System.out.println("Produced new value. Notifying monitor.");
         } catch (Exception e) {
             e.printStackTrace();
