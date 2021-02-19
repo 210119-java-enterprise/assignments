@@ -14,14 +14,14 @@ public class ProducerConsumerDriver {
         Consumer consumer = new Consumer(blockingQueue);
 
         Runnable produceTask = () -> {
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 10; i++) {
                 producer.produce();
             }
             System.out.println("Done producing!");
         };
 
         Runnable consumeTask = () -> {
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 10; i++) {
                 consumer.consume();
             }
             System.out.println("Done consuming!");
