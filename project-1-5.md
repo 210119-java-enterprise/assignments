@@ -16,6 +16,6 @@ For this project you will be working with a partner on a project that allows you
 - [ ] Git SCM (on GitHub)
 
 # Presentations
-- [ ] finalized version of application must be pushed to personal repository within this organization by the presentation date (February 26th, 2021)
+- [ ] finalized version of app must be pushed to personal repository within this organization by the presentation date (February 26th, 2021)
 
 - [ ] 10 minute live demonstration of the implemented features
