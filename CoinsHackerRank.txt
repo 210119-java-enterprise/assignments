@@ -1,0 +1,24 @@
+n is the amount to get change for
+m is the list of values we get
+m is sorted bigest to smallest
+
+* make a set of lists that holds the acceptable 
+ways to give change
+
+to find a solution: 
+get the bigest value that can 
+fit in n (however many time you can) 
+
+then find another value from m that can fit 
+(however many times)  every time you add a value
+add it to a temporary list
+
+keep doing the above step until the n = 0 then check
+if the temporary list already exists in set of lists
+
+if it doesnt add it to the list
+if it does then remove the last element in the list and
+ add it to n.  check again if there is a value in m that
+can go into n (as many times as it can)
+
+
